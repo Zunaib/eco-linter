@@ -1,6 +1,6 @@
 {
   "name": "eco-linter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Green-Code Analytics CLI — measure and report the carbon footprint of your codebase",
   "homepage": "https://eco-linter.vercel.app",
   "repository": {
@@ -9,7 +9,7 @@
   },
   "license": "MIT",
   "keywords": ["eco-linter", "green-code", "carbon-footprint", "energy-efficiency", "cli", "sustainability", "static-analysis"],
-  "files": ["dist"],
+  "files": ["dist", "README.md"],
   "type": "module",
   "bin": {
     "eco-linter": "./dist/index.js"

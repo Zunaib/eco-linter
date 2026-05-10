@@ -1,6 +1,6 @@
 {
   "name": "@eco-linter/eslint-plugin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "ESLint plugin for eco-linter — inline IDE feedback for energy efficiency",
   "homepage": "https://eco-linter.vercel.app",
   "repository": {
@@ -9,7 +9,7 @@
   },
   "license": "MIT",
   "keywords": ["eco-linter", "eslint-plugin", "green-code", "carbon", "energy-efficiency", "sustainability"],
-  "files": ["dist"],
+  "files": ["dist", "README.md"],
   "type": "module",
   "publishConfig": {
     "access": "public"
