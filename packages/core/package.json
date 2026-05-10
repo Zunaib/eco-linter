@@ -1,12 +1,12 @@
 {
   "name": "@eco-linter/core",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "eco-linter analysis engine — rules, scoring, and reporters",
   "license": "MIT",
   "keywords": ["eco-linter", "green-code", "carbon", "energy", "eslint", "static-analysis", "sustainability"],
   "repository": {
     "type": "git",
-    "url": "https://github.com/zunaibimtiaz/eco-linter"
+    "url": "https://github.com/Zunaib/eco-linter"
   },
   "files": ["dist", "README.md"],
   "type": "module",

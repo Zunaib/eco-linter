@@ -1,12 +1,12 @@
 {
   "name": "@eco-linter/badge",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "SVG badge generator for eco-linter Carbon Scores",
   "license": "MIT",
   "keywords": ["eco-linter", "badge", "svg", "carbon-score", "sustainability"],
   "repository": {
     "type": "git",
-    "url": "https://github.com/zunaibimtiaz/eco-linter"
+    "url": "https://github.com/Zunaib/eco-linter"
   },
   "files": ["dist", "README.md"],
   "type": "module",

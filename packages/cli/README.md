@@ -42,7 +42,7 @@ npx eco-linter --format github-annotations
 ### CLI
 
 ```bash
-npm install -D eco-linter
+npm install -D @eco-linter/cli
 ```
 
 ### ESLint Plugin

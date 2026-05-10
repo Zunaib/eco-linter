@@ -1,10 +1,10 @@
 {
   "name": "@eco-linter/eslint-plugin",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "ESLint plugin for eco-linter — inline IDE feedback for energy efficiency",
   "repository": {
     "type": "git",
-    "url": "https://github.com/zunaibimtiaz/eco-linter"
+    "url": "https://github.com/Zunaib/eco-linter"
   },
   "license": "MIT",
   "keywords": ["eco-linter", "eslint-plugin", "green-code", "carbon", "energy-efficiency", "sustainability"],

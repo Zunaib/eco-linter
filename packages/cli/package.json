@@ -1,15 +1,18 @@
 {
-  "name": "eco-linter",
-  "version": "1.1.1",
+  "name": "@eco-linter/cli",
+  "version": "1.1.2",
   "description": "Green-Code Analytics CLI — measure and report the carbon footprint of your codebase",
   "repository": {
     "type": "git",
-    "url": "https://github.com/zunaibimtiaz/eco-linter"
+    "url": "https://github.com/Zunaib/eco-linter"
   },
   "license": "MIT",
   "keywords": ["eco-linter", "green-code", "carbon-footprint", "energy-efficiency", "cli", "sustainability", "static-analysis"],
   "files": ["dist", "README.md"],
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
   "bin": {
     "eco-linter": "./dist/index.js"
   },

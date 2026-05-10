@@ -1,7 +1,7 @@
 # eco-linter
 
 [![Tests](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Zunaib/eco-linter/main/badges/tests.json)](https://github.com/Zunaib/eco-linter/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/eco-linter)](https://www.npmjs.com/package/eco-linter)
+[![npm version](https://img.shields.io/npm/v/@eco-linter/cli)](https://www.npmjs.com/package/@eco-linter/cli)
 [![License: MIT](https://img.shields.io/npm/l/eco-linter)](https://github.com/Zunaib/eco-linter/blob/main/LICENSE)
 
 **Carbon-aware static analysis for TypeScript and JavaScript.**
@@ -46,7 +46,7 @@ npx eco-linter --format github-annotations
 ### CLI
 
 ```bash
-npm install -D eco-linter
+npm install -D @eco-linter/cli
 ```
 
 ### ESLint Plugin
@@ -284,7 +284,7 @@ Then embed it:
 
 | Package | Description |
 |---------|-------------|
-| [`eco-linter`](https://www.npmjs.com/package/eco-linter) | CLI and programmatic API |
+| [`@eco-linter/cli`](https://www.npmjs.com/package/@eco-linter/cli) | CLI and programmatic API |
 | [`@eco-linter/eslint-plugin`](https://www.npmjs.com/package/@eco-linter/eslint-plugin) | ESLint plugin with all 14 rules |
 | `@eco-linter/core` | Analysis engine (internal) |
 | `@eco-linter/badge` | SVG badge generator (internal) |
