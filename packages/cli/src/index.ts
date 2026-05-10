@@ -1,10 +1,18 @@
 #!/usr/bin/env node
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import { execSync } from 'node:child_process';
 import path from 'node:path';
 import process from 'node:process';
 import { glob } from 'glob';
-import { analyze, formatReport, loadConfig } from '@eco-linter/core';
+import {
+  analyze,
+  formatReport,
+  loadConfig,
+  prettyReport,
+  readHistory,
+  appendHistory,
+} from '@eco-linter/core';
 import { generateBadge, updateReadmeBadge } from '@eco-linter/badge';
 import type { Reporter, EcoLinterConfig } from '@eco-linter/core';
 
@@ -16,6 +24,7 @@ interface CliArgs {
   badgeOnly: boolean;
   badgeOutput: string | undefined;
   cwd: string;
+  changedFilesOnly: boolean;
 }
 
 function parseArgs(argv: string[]): CliArgs {
@@ -28,6 +37,7 @@ function parseArgs(argv: string[]): CliArgs {
     badgeOnly: false,
     badgeOutput: undefined,
     cwd: process.cwd(),
+    changedFilesOnly: false,
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -56,43 +66,76 @@ function parseArgs(argv: string[]): CliArgs {
       case '--badge-output':
         if (next) { result.badgeOutput = next; i++; }
         break;
+      case '--changed-files-only':
+        result.changedFilesOnly = true;
+        break;
     }
   }
 
   return result;
 }
 
-async function collectFiles(config: EcoLinterConfig, cwd: string): Promise<Array<{ path: string; content: string }>> {
-  const patterns = config.include;
-  const ignore = config.exclude;
+/** Returns absolute paths of files changed since the last commit, or null if not a git repo. */
+function getChangedFiles(cwd: string): string[] | null {
+  try {
+    const staged = execSync('git diff --name-only --cached', { cwd, encoding: 'utf-8' });
+    const unstaged = execSync('git diff --name-only', { cwd, encoding: 'utf-8' });
+    const untracked = execSync('git ls-files --others --exclude-standard', { cwd, encoding: 'utf-8' });
+    const all = [...staged.split('\n'), ...unstaged.split('\n'), ...untracked.split('\n')]
+      .map(l => l.trim())
+      .filter(Boolean);
+    const unique = [...new Set(all)];
+    return unique.map(f => path.resolve(cwd, f));
+  } catch {
+    return null;
+  }
+}
 
-  const filePaths = await glob(patterns, {
+async function collectFiles(
+  config: EcoLinterConfig,
+  cwd: string,
+  changedFilesOnly: boolean,
+): Promise<Array<{ path: string; content: string }>> {
+  const filePaths = await glob(config.include, {
     cwd,
-    ignore,
+    ignore: config.exclude,
     absolute: true,
     nodir: true,
   });
 
-  const files = await Promise.all(
-    filePaths.map(async (filePath: string) => {
-      const content = await readFile(filePath, 'utf-8');
-      return { path: filePath, content };
-    }),
-  );
+  let filtered = filePaths;
 
-  return files;
+  if (changedFilesOnly) {
+    const changed = getChangedFiles(cwd);
+    if (changed !== null) {
+      const changedSet = new Set(changed);
+      filtered = filePaths.filter(f => changedSet.has(f));
+      if (filtered.length === 0) {
+        console.log('eco-linter: No changed files matched. Nothing to analyse.');
+        process.exit(0);
+      }
+    } else {
+      console.warn('eco-linter: --changed-files-only requires a git repository. Analysing all files.');
+    }
+  }
+
+  return Promise.all(
+    filtered.map(async (filePath: string) => ({
+      path: filePath,
+      content: await readFile(filePath, 'utf-8'),
+    })),
+  );
 }
 
 async function run(): Promise<void> {
   const cliArgs = parseArgs(process.argv);
-
   const config = await loadConfig(cliArgs.cwd, cliArgs.configPath);
 
   if (cliArgs.minScore != null) config.minScore = cliArgs.minScore;
   if (cliArgs.format) config.reporter = cliArgs.format;
 
   if (cliArgs.badgeOnly) {
-    const files = await collectFiles(config, cliArgs.cwd);
+    const files = await collectFiles(config, cliArgs.cwd, false);
     const result = analyze(files, config);
     const badgeOutput = cliArgs.badgeOutput ?? config.badge.outputPath;
     const badgeDir = path.dirname(badgeOutput);
@@ -121,7 +164,7 @@ async function run(): Promise<void> {
     return;
   }
 
-  const files = await collectFiles(config, cliArgs.cwd);
+  const files = await collectFiles(config, cliArgs.cwd, cliArgs.changedFilesOnly);
 
   if (files.length === 0) {
     console.error('eco-linter: No files matched the include patterns. Check your config.');
@@ -129,7 +172,35 @@ async function run(): Promise<void> {
   }
 
   const result = analyze(files, config);
-  const report = formatReport(result, config.reporter);
+
+  // Read history before writing so we can show trend, then append this run
+  const history = await readHistory(cliArgs.cwd);
+  await appendHistory(cliArgs.cwd, {
+    timestamp: result.summary.analyzedAt,
+    score: result.score.overall,
+    grade: result.score.grade,
+    co2ePerBuild: result.score.estimatedCO2ePerBuild,
+    fileCount: result.summary.totalFiles,
+    errorCount: result.summary.errorCount,
+    warnCount: result.summary.warningCount,
+  });
+  const historyWithCurrent = [...history, {
+    timestamp: result.summary.analyzedAt,
+    score: result.score.overall,
+    grade: result.score.grade,
+    co2ePerBuild: result.score.estimatedCO2ePerBuild,
+    fileCount: result.summary.totalFiles,
+    errorCount: result.summary.errorCount,
+    warnCount: result.summary.warningCount,
+  }];
+
+  // Pretty reporter gets history for trend display; others use formatReport normally
+  let report: string;
+  if (config.reporter === 'pretty') {
+    report = prettyReport(result, historyWithCurrent);
+  } else {
+    report = formatReport(result, config.reporter);
+  }
 
   if (cliArgs.output) {
     await writeFile(cliArgs.output, report, 'utf-8');

@@ -47,6 +47,7 @@ function adaptEcoRule(ecoRule: EcoRule): TSESLint.RuleModule<MessageIds, []> {
         },
         getFilename: () => eslintContext.getFilename(),
         getSourceCode: () => eslintContext.getSourceCode().getText(),
+        getProjectMeta: () => ({ sideEffects: undefined }),
       };
 
       return ecoRule.create(ecoContext) as ReturnType<TSESLint.RuleCreateFunction>;

@@ -12,6 +12,9 @@ import { noBarrelReexports } from './tree-shake/no-barrel-reexports.js';
 import { preferNamedExports } from './tree-shake/prefer-named-exports.js';
 import { noExponentialRecursion } from './algorithm/no-exponential-recursion.js';
 import { preferMapOverLinearFind } from './algorithm/prefer-map-over-linear-find.js';
+import { reactNoInlineFunctionProps } from './react/no-inline-function-props.js';
+import { reactNoIndexAsKey } from './react/no-index-as-key.js';
+import { nextNoImgElement } from './next/no-img-element.js';
 import type { EcoRule } from '../types.js';
 
 export const ALL_RULES: EcoRule[] = [
@@ -33,6 +36,11 @@ export const ALL_RULES: EcoRule[] = [
   // Algorithmic complexity
   noExponentialRecursion,
   preferMapOverLinearFind,
+  // React
+  reactNoInlineFunctionProps,
+  reactNoIndexAsKey,
+  // Next.js
+  nextNoImgElement,
 ];
 
 export const RULES_BY_NAME: Map<string, EcoRule> = new Map(

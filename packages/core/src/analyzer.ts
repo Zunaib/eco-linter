@@ -13,6 +13,33 @@ import { ALL_RULES, RULES_BY_NAME } from './rules/index.js';
 import { calculateFileScore, calculateScore } from './scoring/calculator.js';
 import { DEFAULT_CONFIG } from './types.js';
 
+// ─── Suppression comment parsing ─────────────────────────────────────────────
+
+type Suppression = { line: number | 'file'; rule: string | null };
+
+function extractSuppressions(comments: TSESTree.Comment[]): Suppression[] {
+  const suppressions: Suppression[] = [];
+  for (const comment of comments) {
+    const text = comment.value.trim();
+    if (text.startsWith('eco-linter-disable-next-line')) {
+      const rule = text.slice('eco-linter-disable-next-line'.length).trim() || null;
+      suppressions.push({ line: comment.loc.start.line + 1, rule });
+    } else if (text.startsWith('eco-linter-disable')) {
+      const rule = text.slice('eco-linter-disable'.length).trim() || null;
+      suppressions.push({ line: 'file', rule });
+    }
+  }
+  return suppressions;
+}
+
+function isSuppressed(suppressions: Suppression[], violationLine: number, ruleId: string): boolean {
+  return suppressions.some(
+    s => (s.line === 'file' || s.line === violationLine) && (s.rule === null || s.rule === ruleId),
+  );
+}
+
+// ─── Rule helpers ─────────────────────────────────────────────────────────────
+
 function getActiveRules(config: EcoLinterConfig): EcoRule[] {
   return ALL_RULES.filter(rule => {
     const override = config.rules[rule.name];
@@ -21,14 +48,13 @@ function getActiveRules(config: EcoLinterConfig): EcoRule[] {
   });
 }
 
-function applyRuleOverride(
-  rule: EcoRule,
-  config: EcoLinterConfig,
-): EcoRule['severity'] {
+function applyRuleOverride(rule: EcoRule, config: EcoLinterConfig): EcoRule['severity'] {
   const override = config.rules[rule.name];
   if (override && override !== 'off') return override;
   return rule.severity;
 }
+
+// ─── AST walker ───────────────────────────────────────────────────────────────
 
 type NodeVisitor = (node: TSESTree.Node) => void;
 
@@ -61,6 +87,8 @@ function walkNode(node: TSESTree.Node, visitors: Map<string, NodeVisitor[]>): vo
   }
 }
 
+// ─── File analysis ────────────────────────────────────────────────────────────
+
 export function analyzeFile(
   filePath: string,
   sourceCode: string,
@@ -75,12 +103,14 @@ export function analyzeFile(
       loc: true,
       range: true,
       tokens: false,
-      comment: false,
+      comment: true,
     });
   } catch {
-    // Return empty result for files that can't be parsed
     return { filePath, violations: [], score: 100 };
   }
+
+  const suppressions = extractSuppressions(ast.comments ?? []);
+  const projectMeta = { sideEffects: config.sideEffects };
 
   const activeRules = getActiveRules(config);
   const visitors = new Map<string, NodeVisitor[]>();
@@ -89,14 +119,13 @@ export function analyzeFile(
     const effectiveSeverity = applyRuleOverride(rule, config);
     const context: RuleContext = {
       report(v) {
-        violations.push({
-          ...v,
-          ruleId: rule.name,
-          severity: effectiveSeverity,
-        });
+        if (!isSuppressed(suppressions, v.line, rule.name)) {
+          violations.push({ ...v, ruleId: rule.name, severity: effectiveSeverity });
+        }
       },
       getFilename: () => filePath,
       getSourceCode: () => sourceCode,
+      getProjectMeta: () => projectMeta,
     };
 
     const listener: RuleListener = rule.create(context);
@@ -116,6 +145,8 @@ export function analyzeFile(
     score: calculateFileScore(violations),
   };
 }
+
+// ─── Multi-file analysis ──────────────────────────────────────────────────────
 
 export function analyze(
   files: Array<{ path: string; content: string }>,

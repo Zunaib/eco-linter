@@ -1,4 +1,6 @@
 import type { AnalysisResult, CarbonScore, Violation } from '../types.js';
+import type { HistoryEntry } from '../history.js';
+import { getScoreTrend, getTrendDelta, sparkline } from '../history.js';
 
 const RESET = '\x1b[0m';
 const BOLD = '\x1b[1m';
@@ -38,7 +40,24 @@ function gradeColor(grade: CarbonScore['grade']): string {
   return RED;
 }
 
-export function prettyReport(result: AnalysisResult): string {
+function trendLine(history: HistoryEntry[]): string {
+  const trend = getScoreTrend(history);
+  if (trend === 'new') return '';
+
+  const delta = getTrendDelta(history);
+  const prev = history[history.length - 2]!.score;
+  const spark = sparkline(history);
+
+  const sign = delta > 0 ? '+' : '';
+  let arrow = '→';
+  let color = GRAY;
+  if (trend === 'up') { arrow = '↑'; color = GREEN; }
+  if (trend === 'down') { arrow = '↓'; color = RED; }
+
+  return `  ${color}${arrow} ${sign}${delta} from last run (${prev} → ${history[history.length - 1]!.score})  ${DIM}${spark}${RESET}`;
+}
+
+export function prettyReport(result: AnalysisResult, history: HistoryEntry[] = []): string {
   const lines: string[] = [];
 
   lines.push('');
@@ -47,7 +66,6 @@ export function prettyReport(result: AnalysisResult): string {
   lines.push(`${DIM}Analyzing ${result.summary.totalFiles} files...${RESET}`);
   lines.push('');
 
-  // Violations grouped by file
   const fileViolations = result.files.filter(f => f.violations.length > 0);
   if (fileViolations.length === 0) {
     lines.push(`${GREEN}  No violations found — perfect score!${RESET}`);
@@ -82,6 +100,11 @@ export function prettyReport(result: AnalysisResult): string {
   lines.push(
     `  ${BOLD}Est. CO₂e:${RESET}      ${CYAN}~${score.estimatedCO2ePerBuild}g per CI build${RESET}`,
   );
+
+  if (history.length >= 2) {
+    lines.push(trendLine(history));
+  }
+
   lines.push('');
   lines.push(`  ${BOLD}Pillars:${RESET}`);
 

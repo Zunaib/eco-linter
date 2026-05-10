@@ -64,6 +64,7 @@ export interface RuleContext {
   report(violation: Omit<Violation, 'ruleId'>): void;
   getFilename(): string;
   getSourceCode(): string;
+  getProjectMeta(): { sideEffects: boolean | string[] | undefined };
 }
 
 export interface EcoRule {
@@ -91,6 +92,8 @@ export interface EcoLinterConfig {
   };
   minScore: number;
   reporter: Reporter;
+  /** Populated automatically from the nearest package.json sideEffects field. */
+  sideEffects?: boolean | string[];
 }
 
 export const DEFAULT_CONFIG: EcoLinterConfig = {
