@@ -1,0 +1,40 @@
+{
+  "name": "eco-linter",
+  "version": "1.0.0",
+  "description": "Green-Code Analytics CLI — measure and report the carbon footprint of your codebase",
+  "homepage": "https://eco-linter.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zunaibimtiaz/eco-linter"
+  },
+  "license": "MIT",
+  "keywords": ["eco-linter", "green-code", "carbon-footprint", "energy-efficiency", "cli", "sustainability", "static-analysis"],
+  "files": ["dist"],
+  "type": "module",
+  "bin": {
+    "eco-linter": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@eco-linter/core": "workspace:*",
+    "@eco-linter/badge": "workspace:*",
+    "glob": "^10.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "typescript": "^5.4.5"
+  }
+}

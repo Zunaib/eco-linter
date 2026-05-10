@@ -1,0 +1,35 @@
+{
+  "name": "@eco-linter/badge",
+  "version": "1.0.0",
+  "description": "SVG badge generator for eco-linter Carbon Scores",
+  "license": "MIT",
+  "keywords": ["eco-linter", "badge", "svg", "carbon-score", "sustainability"],
+  "homepage": "https://eco-linter.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zunaibimtiaz/eco-linter"
+  },
+  "files": ["dist"],
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "typescript": "^5.4.5"
+  }
+}
