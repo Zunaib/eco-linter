@@ -1,5 +1,10 @@
 # eco-linter
 
+[![CI](https://img.shields.io/github/actions/workflow/status/Zunaib/eco-linter/ci.yml?branch=main&label=tests)](https://github.com/Zunaib/eco-linter/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/eco-linter)](https://www.npmjs.com/package/eco-linter)
+[![npm downloads](https://img.shields.io/npm/dm/eco-linter)](https://www.npmjs.com/package/eco-linter)
+[![License: MIT](https://img.shields.io/npm/l/eco-linter)](https://github.com/Zunaib/eco-linter/blob/main/LICENSE)
+
 **Carbon-aware static analysis for TypeScript and JavaScript.**
 
 eco-linter analyses your codebase across four energy-efficiency pillars and produces a single **Carbon Score** from 0–100 — along with an estimated CO₂e per build. Run it as a CLI, plug it into ESLint for inline IDE feedback, or gate your CI pipeline with a minimum score.
