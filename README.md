@@ -1,8 +1,7 @@
 # eco-linter
 
-[![CI](https://img.shields.io/github/actions/workflow/status/Zunaib/eco-linter/ci.yml?branch=main&label=tests)](https://github.com/Zunaib/eco-linter/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Zunaib/eco-linter/main/badges/tests.json)](https://github.com/Zunaib/eco-linter/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/eco-linter)](https://www.npmjs.com/package/eco-linter)
-[![npm downloads](https://img.shields.io/npm/dm/eco-linter)](https://www.npmjs.com/package/eco-linter)
 [![License: MIT](https://img.shields.io/npm/l/eco-linter)](https://github.com/Zunaib/eco-linter/blob/main/LICENSE)
 
 **Carbon-aware static analysis for TypeScript and JavaScript.**
