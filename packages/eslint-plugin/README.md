@@ -1,6 +1,6 @@
 # @eco-linter/eslint-plugin
 
-ESLint plugin for [eco-linter](https://www.npmjs.com/package/eco-linter) — inline IDE warnings for energy-inefficient code patterns in TypeScript and JavaScript.
+ESLint plugin for [@eco-linter/cli](https://www.npmjs.com/package/@eco-linter/cli) — inline IDE warnings for energy-inefficient code patterns in TypeScript and JavaScript.
 
 ## Installation
 

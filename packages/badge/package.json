@@ -1,6 +1,6 @@
 {
   "name": "@eco-linter/badge",
-  "version": "1.1.2",
+  "version": "1.1.4",
   "description": "SVG badge generator for eco-linter Carbon Scores",
   "license": "MIT",
   "keywords": ["eco-linter", "badge", "svg", "carbon-score", "sustainability"],

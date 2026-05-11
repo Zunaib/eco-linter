@@ -1,8 +1,8 @@
 # @eco-linter/badge
 
-SVG badge generator for [eco-linter](https://www.npmjs.com/package/eco-linter) Carbon Scores.
+SVG badge generator for [@eco-linter/cli](https://www.npmjs.com/package/@eco-linter/cli) Carbon Scores.
 
-This is an internal package used by the `eco-linter` CLI. For end-user docs see the [eco-linter package](https://www.npmjs.com/package/eco-linter).
+This is an internal package used by `@eco-linter/cli`. For end-user docs see the [@eco-linter/cli package](https://www.npmjs.com/package/@eco-linter/cli).
 
 ## Usage
 

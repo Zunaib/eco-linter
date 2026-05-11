@@ -1,8 +1,8 @@
 # @eco-linter/core
 
-Analysis engine for [eco-linter](https://www.npmjs.com/package/eco-linter) — rules, scoring, and reporters.
+Analysis engine for [@eco-linter/cli](https://www.npmjs.com/package/@eco-linter/cli) — rules, scoring, and reporters.
 
-This is an internal package consumed by `eco-linter` (CLI) and `@eco-linter/eslint-plugin`. For end-user docs see the [eco-linter package](https://www.npmjs.com/package/eco-linter).
+This is an internal package consumed by `@eco-linter/cli` and `@eco-linter/eslint-plugin`. For end-user docs see the [@eco-linter/cli package](https://www.npmjs.com/package/@eco-linter/cli).
 
 ## Programmatic API
 
